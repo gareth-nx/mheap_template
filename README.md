@@ -80,21 +80,3 @@ end do
 call h%delete()
 print*, 'Heap deleted, maximum allowed entries is now = ', h%nmax
 ```
-
-This produces the following output
-```
-Setup heap with specified maximum number of entries -- 10 here
-Add some entries
-Heap size is:            4
-Add more entries
-New heap size is:            6
-Peeking at the 3rd entry (without changing the heap) gives:    3.0000000000000000        2.0000000000000000     
-Returning entries in order of priority: 
-  Entry            1  in order:    2.0000000000000000       -1.0000000000000000      ( norm =    2.2360679774997898       )
-  Entry            2  in order:    1.0000000000000000        2.0000000000000000      ( norm =    2.2360679774997898       )
-  Entry            3  in order:    3.0000000000000000        2.0000000000000000      ( norm =    3.6055512754639896       )
-  Entry            4  in order:    5.0000000000000000        1.0000000000000000      ( norm =    5.0990195135927854       )
-  Entry            5  in order:   -6.0000000000000000        5.0000000000000000      ( norm =    7.8102496759066558       )
-  Entry            6  in order:   -1.0000000000000000        8.0000000000000000      ( norm =    8.0622577482985491       )
-Heap deleted, maximum allowed entries is now =            0
-```

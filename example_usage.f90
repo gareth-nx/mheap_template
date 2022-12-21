@@ -82,4 +82,21 @@ end do
 call h%delete()
 print*, 'Heap deleted, maximum allowed entries is now = ', h%nmax
 
+!
+! Repeated addition / removal of points works
+!
+call h%init(5)
+do i = 1, 2
+    print*, i, 'a, heap size: ', h%size()
+    call h%insert( point2([ 1.0d0, 2.0d0]) )
+    call h%insert( point2([-1.0d0, 8.0d0]) )
+    call h%insert( point2([ 5.0d0, 1.0d0]) )
+    call h%insert( point2([ 2.0d0,-1.0d0]) )
+    print*, i, 'b, heap size: ', h%size()
+    call h%pop(p)
+    call h%pop(p)
+    call h%pop(p)
+    print*, i, 'c, heap size: ', h%size()
+end do
+
 end program example_usage_mheap
