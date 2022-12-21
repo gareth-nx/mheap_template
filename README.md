@@ -1,4 +1,4 @@
-# Heap data struction in Fortran
+# Heap data structure in Fortran
 
 Fortran code to create a heap data structure containing a user-defined type with user-defined priority function.
 
