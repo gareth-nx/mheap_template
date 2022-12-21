@@ -19,7 +19,6 @@ end type
 
 contains
 
-! Function used in the heap to determine if a<b
 logical function less_than(a, b)
     type(point2), intent(in) :: a, b
     less_than = norm2(a%x) < norm2(b%x)

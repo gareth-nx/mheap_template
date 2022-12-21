@@ -30,7 +30,7 @@
 ! and
 !     logical function IS_HIGHER_PRIORITY(N1,N2)
 !         TYPE(NODE_DATA_TYPE), INTENT(IN) :: N1, N2
-!         ... return TRUE if N1 < N2 and FALSE otherwise ..
+!         ... return TRUE if PRIORITY(N1) > PRIORITY(N2) and FALSE otherwise ..
 !     end function
 ! and then include
 
