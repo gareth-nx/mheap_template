@@ -1,6 +1,6 @@
 # Heap data structure in Fortran
 
-Fortran code to create a heap data structure containing a user-defined type with user-defined priority function.
+Fortran code to create a [heap data structure](https://en.wikipedia.org/wiki/Heap_(data_structure)#:~:text=In%20computer%20science%2C%20a%20heap,to%20the%20key%20of%20C.) containing a user-defined type with user-defined priority function.
 
 Preprocessing is used to create the heap derived type at compile time.
 
