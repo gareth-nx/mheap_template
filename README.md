@@ -12,7 +12,7 @@ gfortran -cpp example_usage.f90 -o example_usage
 ./example_usage
 ```
 
-It defines a heap with entries of user-defined type `point2` (defined in a module `nodedata`). Given the derived type `point2` and an associated function `is_less_than(a, b)`, we can create a heap for the `point2` type like so:
+[This example](example_usage.f90) defines a heap with entries of user-defined type `point2` (defined in a module `nodedata`). We have the derived type `point2` and an associated function `is_less_than(a, b)` where a, b are of `type(point2)`. Then we can create a heap for the `point2` type:
 ```fortran
 !
 ! Module with a heap for our type
