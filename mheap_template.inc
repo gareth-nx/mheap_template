@@ -28,7 +28,7 @@
 ! To use this file, define
 !     TYPE(NODE_DATA_TYPE)
 ! and
-!     logical function IS_LESS_THAN(N1,N2)
+!     logical function IS_HIGHER_PRIORITY(N1,N2)
 !         TYPE(NODE_DATA_TYPE), INTENT(IN) :: N1, N2
 !         ... return TRUE if N1 < N2 and FALSE otherwise ..
 !     end function
@@ -114,7 +114,7 @@ CONTAINS
          K1 = K2 / 2
          IR = HEAP%INDX(K2) 
          IL = HEAP%INDX(K1) 
-         IF( IS_LESS_THAN( HEAP%DATA(IL), HEAP%DATA(IR) ) ) RETURN
+         IF( IS_HIGHER_PRIORITY( HEAP%DATA(IL), HEAP%DATA(IR) ) ) RETURN
          CALL SWAPINT( HEAP%INDX(K2), HEAP%INDX(K1) )
          K2 = K2 / 2
       ENDDO
@@ -175,7 +175,7 @@ CONTAINS
          IF( 2*K .NE. HEAP%N ) THEN 
             IL = HEAP%INDX(2*K+1) 
             IR = HEAP%INDX(2*K  )   
-            IF( IS_LESS_THAN(HEAP%DATA(IL),HEAP%DATA(IR)) ) THEN
+            IF( IS_HIGHER_PRIORITY(HEAP%DATA(IL),HEAP%DATA(IR)) ) THEN
                I = I + 1
             ENDIF
          ENDIF
@@ -184,7 +184,7 @@ CONTAINS
          ! the heap property, so the remaining elements must be re-heaped. 
          IL    = HEAP%INDX(K) 
          IR    = HEAP%INDX(I) 
-         IF( IS_LESS_THAN(HEAP%DATA(IL),HEAP%DATA(IR)) ) RETURN
+         IF( IS_HIGHER_PRIORITY(HEAP%DATA(IL),HEAP%DATA(IR)) ) RETURN
          
          CALL SWAPINT( HEAP%INDX(I), HEAP%INDX(K) )
          
@@ -195,7 +195,7 @@ CONTAINS
    END SUBROUTINE HEAP_GROW
 
    SUBROUTINE HEAP_REHEAP(HEAP)
-      ! Builds the heap from the element data using the heap function IS_LESS_THAN
+      ! Builds the heap from the element data using the heap function IS_HIGHER_PRIORITY
       ! At exit, the root node satisfies the heap condition:
       !   HPFUN( ROOT_NODE, NODE ) = .true. for any other NODE 
       ! 
