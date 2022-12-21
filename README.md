@@ -1,4 +1,6 @@
-Fortran code to create a heap data structure containing a user-defined type, using the preprocessor.
+Fortran code to create a heap data structure containing a user-defined type with user-defined priority function.
+
+Preprocessing is used to create the heap derived type at compile time.
 
 This was modified by Gareth Davies from [Daniel Pena's mheap
 code](https://github.com/trifling/mheap). The latter code supports heap
