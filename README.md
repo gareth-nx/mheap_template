@@ -51,8 +51,8 @@ type(heap_point2) :: h
 type(point2) :: p
 integer :: i
 
-print*, 'Setup heap with specified maximum number of entries -- 10 here'
-call h%init(10)
+print*, 'Setup heap with 10 entries. Throw error if we try to store too many items'
+call h%init(10, err_if_too_full = .true.)
 
 print*, 'Add some entries'
 call h%insert( point2([ 1.0d0, 2.0d0]) )
@@ -80,3 +80,5 @@ end do
 call h%delete()
 print*, 'Heap deleted, maximum allowed entries is now = ', h%nmax
 ```
+
+If the heap is initialised with `err_if_too_full = .false.` (default) then it will ignore insertions once it is full, without warning.

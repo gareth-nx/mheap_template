@@ -42,8 +42,9 @@ TYPE :: THEAP
    INTEGER                             :: NMAX      ! MAX SIZE
    INTEGER                             :: N         ! CURRENT HEAP SIZE
    INTEGER                             :: M         ! CURRENT TREE SIZE
-   TYPE(NODE_DATA_TYPE), ALLOCATABLE     :: DATA(:) ! NODE DATA -- type is defined by user outside this file
+   TYPE(NODE_DATA_TYPE), ALLOCATABLE   :: DATA(:) ! NODE DATA -- type is defined by user outside this file
    INTEGER, ALLOCATABLE                :: INDX(:)   ! NODES INDEX
+   LOGICAL                             :: ERR_IF_TOO_FULL = .FALSE. ! Throw an error if we insert too many elements?
    CONTAINS
    PROCEDURE :: INIT    => HEAP_INIT
    PROCEDURE :: INSERT  => HEAP_INSERT
@@ -63,13 +64,15 @@ CONTAINS
       HEAP_SIZE = HEAP%N
    END FUNCTION HEAP_SIZE
 
-   SUBROUTINE HEAP_INIT(HEAP,NMAX)
+   SUBROUTINE HEAP_INIT(HEAP,NMAX, ERR_IF_TOO_FULL)
       ! Initializes the heap 
       ! NMAX  -  max size of the heap
       ! HPFUN -  the heap function (provides comparison between two nodes' data)
       CLASS( THEAP )        :: HEAP
       INTEGER, INTENT(IN) :: NMAX
+      LOGICAL, INTENT(IN), OPTIONAL :: ERR_IF_TOO_FULL
       INTEGER :: I 
+
       HEAP%NMAX = NMAX
       HEAP%N    = 0
       HEAP%M    = 0
@@ -78,6 +81,8 @@ CONTAINS
       DO I = 1, NMAX
          HEAP%INDX(I)=I
       ENDDO
+
+      IF(PRESENT(ERR_IF_TOO_FULL)) HEAP%ERR_IF_TOO_FULL = ERR_IF_TOO_FULL
    END SUBROUTINE HEAP_INIT
    
    SUBROUTINE HEAP_RELEASE(HEAP)                                       
@@ -88,6 +93,7 @@ CONTAINS
       HEAP%N    = 0
       HEAP%M    = 0
       HEAP%NMAX = 0
+      HEAP%ERR_IF_TOO_FULL = .FALSE.
    END SUBROUTINE HEAP_RELEASE                          
 
    SUBROUTINE HEAP_INSERT(HEAP,NODE)         
@@ -101,7 +107,14 @@ CONTAINS
 
       INTEGER :: I, K1, K2, IL, IR
 
-      IF( HEAP%N .EQ. HEAP%NMAX ) RETURN
+      IF( HEAP%N .EQ. HEAP%NMAX ) THEN
+          IF(HEAP%ERR_IF_TOO_FULL) THEN
+              ! We tried to insert too many elements in the heap -- fail here
+              STOP ': Tried to insert more than NMAX items in the heap'
+          ELSE
+              RETURN
+          END IF
+      END IF
       
       ! Add one element and copy node data to new element
       HEAP%N = HEAP%N + 1
