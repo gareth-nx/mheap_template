@@ -10,7 +10,7 @@ entries of fixed-size double-precision arrays.
 
 # How to use it
 
-The code [example_usage.f90](example_usage.f90) illustrates how to use it. It can be compiled with
+The code [example_usage.f90](example_usage.f90) illustrates how to use it. Compile and run with
 ```
 gfortran -cpp example_usage.f90 -o example_usage
 ./example_usage
