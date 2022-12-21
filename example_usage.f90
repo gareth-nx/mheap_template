@@ -57,17 +57,32 @@ program example_usage_mheap
     call h%init(10)
 
     ! Add some entries
-
     call h%insert( point2([ 1.0d0, 2.0d0]) )
     call h%insert( point2([-1.0d0, 8.0d0]) )
     call h%insert( point2([ 5.0d0, 1.0d0]) )
     call h%insert( point2([ 2.0d0,-1.0d0]) )
+
+    ! How many entries?
+    print*, 'Heap size is: ', h%size()
+
+    ! Add some more
     call h%insert( point2([-6.0d0, 5.0d0]) )
     call h%insert( point2([ 3.0d0, 2.0d0]) )
+
+    ! How many entries?
+    print*, 'New heap size is: ', h%size()
+
+    ! Peek at an entry
+    call h%peek(3, p)
+    print*, 'Peeking at the 3rd entry (without changing the heap) gives: ', p%x
 
     do i = 1, h%size()
        call h%pop(p) 
        print*, 'Entry ', i, ' in order: ', p%x, '( norm = ', norm2(p%x), ' )'
    end do
+
+   ! Cleanup
+   call h%delete()
+   print*, 'Heap deleted, maximum allowed entries is now = ', h%nmax
 
 end program example_usage_mheap

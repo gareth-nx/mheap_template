@@ -51,7 +51,8 @@ TYPE :: THEAP
    PROCEDURE :: POP     => HEAP_POP
    PROCEDURE :: REHEAP  => HEAP_REHEAP
    PROCEDURE :: SIZE    => HEAP_SIZE
-   FINAL     :: HEAP_RELEASE
+   PROCEDURE :: DELETE  => HEAP_RELEASE
+   !FINAL     :: HEAP_RELEASE
 END TYPE THEAP
 
 CONTAINS
@@ -81,7 +82,7 @@ CONTAINS
    
    SUBROUTINE HEAP_RELEASE(HEAP)                                       
       ! Releases all the allocated memory and resets the heap
-      TYPE( THEAP ) :: HEAP
+      CLASS( THEAP ), INTENT(INOUT) :: HEAP
       DEALLOCATE(HEAP%INDX)
       DEALLOCATE(HEAP%DATA)
       HEAP%N    = 0
@@ -194,7 +195,7 @@ CONTAINS
    END SUBROUTINE HEAP_GROW
 
    SUBROUTINE HEAP_REHEAP(HEAP)
-      ! Builds the heap from the element data using the provided heap function.
+      ! Builds the heap from the element data using the heap function IS_LESS_THAN
       ! At exit, the root node satisfies the heap condition:
       !   HPFUN( ROOT_NODE, NODE ) = .true. for any other NODE 
       ! 
