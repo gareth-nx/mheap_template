@@ -46,10 +46,10 @@ end module mheap_point2
 
 program example_usage_mheap
     use nodedata, only : point2
-    use mheap_point2, only: heap_point3 => theap
+    use mheap_point2, only: heap_point2 => theap
     implicit none
 
-    type(heap_point3) :: h
+    type(heap_point2) :: h
     type(point2) :: p
     integer :: i
    
