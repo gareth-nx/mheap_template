@@ -14,7 +14,11 @@ gfortran -cpp example_usage.f90 -o example_usage
 ./example_usage
 ```
 
-[This example](example_usage.f90) defines a heap with entries of user-defined type `point2` (defined in a module `nodedata`). We have the derived type `point2` and an associated function `is_higher_priority(a, b)` which returns TRUE if `a` is higher priority than `b` (and `a, b` are of `type(point2)`). Then we can create a heap for the `point2` type:
+[This example](example_usage.f90) defines a heap with entries of user-defined type `point2` (defined in a module `nodedata`). 
+
+We have the derived type `point2` and an associated function `is_higher_priority(a, b)` which returns TRUE if `a` is higher priority than `b` (and `a, b` are of `type(point2)`). 
+
+Then we can create a heap for the `point2` type with the given priority:
 ```fortran
 !
 ! Module with a heap for our type
