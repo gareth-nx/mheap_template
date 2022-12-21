@@ -16,27 +16,12 @@ gfortran -cpp example_usage.f90 -o example_usage
 ./example_usage
 ```
 
-[The example](example_usage.f90) defines a heap with entries of user-defined type `point2` (defined in a module `nodedata`). 
-
-We have the derived type `point2` and an function `fun(a, b)` which returns TRUE if `a` is higher priority than `b`. Here `a, b` are of `type(point2)`. 
-
-Then we can create a heap for the `point2` type with the given priority:
+[The example](example_usage.f90) defines a heap with entries of user-defined type `point2` and user defined priority function. The priority function `fun(a, b)` which returns TRUE if `a` is higher priority than `b`, where both `a` and `b` are of `type(point2)`. 
 ```fortran
-!
-! Module with a heap for our type
-!
 module mheap_point2
-! Create a heap type "theap" that contains data of type(node_data_type)
-! We need to define:
-!    1. node_data_type
-!    2. A logical comparison function is_higher_priority(n1, n2) where n1, n2 are type(node_data_type)
 use nodedata, only: node_data_type=>point2, is_higher_priority=>less_than
 implicit none
-
-! This includes code to make the type THEAP, 
-! using data type(node_data_type) and comparison function "is_higher_priority"
 #include "mheap_template.inc"
-
 end module mheap_point2
 ```
 The resulting heap is of `type(theap)`.
