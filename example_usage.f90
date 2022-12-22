@@ -52,9 +52,9 @@ type(heap_point2) :: h, g
 type(point2) :: p
 integer :: i
 
-print*, 'Using a heap containing type(point2), with priority determined by the less_than function'
+print*, 'Using a heap containing type(point2).'
 
-print*, 'Setup heap with 10 entries. Throw error if we try to store too many items'
+print*, 'Setup heap with 10 entries. Throw error if we try to store too many items.'
 call h%init(10, err_if_too_full = .true., priority_function = less_than)
 
 print*, 'Add some entries'
