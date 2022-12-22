@@ -36,7 +36,8 @@ type(heap_point2) :: h
 type(point2) :: p
 integer :: i
 
-! Setup heap with 10 entries and a non-default priority function. Throw error if we store too many items
+! Setup heap with 10 entries and a non-default priority function. 
+! Throw error if we store too many items
 call h%init(10, err_if_too_full = .true., priority_function=less_than)
 
 ! Add some entries
