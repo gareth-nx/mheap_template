@@ -24,9 +24,9 @@ implicit none
 #include "mheap_template.inc"
 end module mheap_point2
 ```
-The resulting heap is of `type(theap)`. The priority function can be changed on initialisation.
+The above module defines a heap of `type(theap)`. The priority function can be changed on initialisation.
 
-We can now use the heap like so:
+We use the heap like so:
 ```fortran
 use nodedata, only : point2, less_than
 use mheap_point2, only: heap_point2 => theap
@@ -36,10 +36,10 @@ type(heap_point2) :: h
 type(point2) :: p
 integer :: i
 
-print*, 'Setup heap with 10 entries. Throw error if we try to store too many items'
+! Setup heap with 10 entries. Throw error if we try to store too many items
 call h%init(10, err_if_too_full = .true., priority_function=less_than)
 
-print*, 'Add some entries'
+! Add some entries
 call h%insert( point2([ 1.0d0, 2.0d0]) )
 call h%insert( point2([-1.0d0, 8.0d0]) )
 call h%insert( point2([ 5.0d0, 1.0d0]) )
@@ -47,7 +47,7 @@ call h%insert( point2([ 2.0d0,-1.0d0]) )
 
 print*, 'Heap size is: ', h%size()
 
-print*, 'Add more entries'
+! Add more entries
 call h%insert( point2([-6.0d0, 5.0d0]) )
 call h%insert( point2([ 3.0d0, 2.0d0]) )
 
@@ -56,14 +56,14 @@ print*, 'New heap size is: ', h%size()
 call h%peek(3, p)
 print*, 'Peeking at the 3rd entry (without changing the heap) gives: ', p%x
 
-print*, 'Returning entries in order of priority: '
+! Return entries in order of priority
 do i = 1, h%size()
     call h%pop(p) 
     print*, '  Entry ', i, ' in order: ', p%x, '( norm = ', norm2(p%x), ' )'
 end do
 
+! Delete heap data and reset priority function
 call h%delete()
-print*, 'Heap deleted, maximum allowed entries is now = ', h%nmax
 ```
 
 If the heap is initialised with `err_if_too_full = .false.` (default) then it will ignore insertions once it is full, without warning.
