@@ -16,19 +16,19 @@ gfortran -cpp example_usage.f90 -o example_usage
 ./example_usage
 ```
 
-[The example](example_usage.f90) defines a heap with entries of user-defined type `point2` and user defined priority function. The priority function `fun(a, b)` returns TRUE if `a` is higher priority than `b`, where both `a` and `b` are of `type(point2)`. 
+[The example](example_usage.f90) defines a heap with entries of user-defined type `point2` and default priority function. The priority function `fun(a, b)` returns TRUE if `a` is higher priority than `b`, where both `a` and `b` are of `type(point2)`.
 ```fortran
 module mheap_point2
-use nodedata, only: node_data_type=>point2, is_higher_priority=>less_than
+use nodedata, only: node_data_type=>point2, default_priority_function=>greater_than
 implicit none
 #include "mheap_template.inc"
 end module mheap_point2
 ```
-The resulting heap is of `type(theap)`.
+The resulting heap is of `type(theap)`. The priority function can be changed on initialisation.
 
 We can now use the heap like so:
 ```fortran
-use nodedata, only : point2
+use nodedata, only : point2, less_than
 use mheap_point2, only: heap_point2 => theap
 implicit none
 
@@ -37,7 +37,7 @@ type(point2) :: p
 integer :: i
 
 print*, 'Setup heap with 10 entries. Throw error if we try to store too many items'
-call h%init(10, err_if_too_full = .true.)
+call h%init(10, err_if_too_full = .true., priority_function=less_than)
 
 print*, 'Add some entries'
 call h%insert( point2([ 1.0d0, 2.0d0]) )

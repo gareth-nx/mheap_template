@@ -18,43 +18,44 @@ type :: point2
 end type
 
 contains
+! Alternative priority functions
 
 logical function less_than(a, b)
     type(point2), intent(in) :: a, b
     less_than = norm2(a%x) < norm2(b%x)
 end function
 
+logical function greater_than(a, b)
+    type(point2), intent(in) :: a, b
+    greater_than = norm2(a%x) > norm2(b%x)
+end function
+
 end module nodedata
 
-!
-! Use of the template here
-!
-module mheap_point2
 ! Create a heap type "theap" that contains data of type(node_data_type)
 ! We need to define:
 !    1. node_data_type
-!    2. A logical comparison function is_higher_priority(n1, n2) where n1, n2 are type(node_data_type)
-use nodedata, only: node_data_type=>point2, is_higher_priority=>less_than
+!    2. The default logical priority function F(n1, n2) with n1, n2 of type(node_data_type)
+module mheap_point2
+use nodedata, only: node_data_type=>point2, default_priority_function=>less_than
 implicit none
-
-! This includes code to make the type THEAP, 
-! using data type(node_data_type) and comparison function "is_higher_priority"
 #include "mheap_template.inc"
-
 end module mheap_point2
 
 program example_usage_mheap
 
-use nodedata, only : point2
+use nodedata, only : point2, greater_than, less_than
 use mheap_point2, only: heap_point2 => theap
 implicit none
 
-type(heap_point2) :: h
+type(heap_point2) :: h, g
 type(point2) :: p
 integer :: i
 
+print*, 'Using a heap containing type(point2), with priority determined by the less_than function'
+
 print*, 'Setup heap with 10 entries. Throw error if we try to store too many items'
-call h%init(10, err_if_too_full = .true.)
+call h%init(10, err_if_too_full = .true., priority_function = less_than)
 
 print*, 'Add some entries'
 call h%insert( point2([ 1.0d0, 2.0d0]) )
@@ -71,7 +72,7 @@ call h%insert( point2([ 3.0d0, 2.0d0]) )
 print*, 'New heap size is: ', h%size()
 
 call h%peek(3, p)
-print*, 'Peeking at the 3rd entry (without changing the heap) gives: ', p%x
+print*, 'Peeking at data in the 3rd index (NOT related to the priority) gives: ', p%x
 
 print*, 'Returning entries in order of priority: '
 do i = 1, h%size()
@@ -82,9 +83,7 @@ end do
 call h%delete()
 print*, 'Heap deleted, maximum allowed entries is now = ', h%nmax
 
-!
-! Repeated addition / removal of points works
-!
+print*, 'Repeated addition / removal of points works'
 call h%init(5, err_if_too_full = .false.)
 do i = 1, 3
     ! This will eventually try to add more than 5 entries.
@@ -100,5 +99,22 @@ do i = 1, 3
     call h%pop(p)
     print*, i, 'c, heap size: ', h%size()
 end do
+
+call h%delete()
+
+print*, 'We can also use different priority functions'
+call h%init(2)
+call g%init(2, priority_function = greater_than)
+
+call h%insert( point2([ 1.0d0, 2.0d0]) )
+call h%insert( point2([-1.0d0, 8.0d0]) )
+call g%insert( point2([ 1.0d0, 2.0d0]) )
+call g%insert( point2([-1.0d0, 8.0d0]) )
+
+call h%pop(p)
+print*, 'With the less_than priority, the first entry is ', p%x
+call g%pop(p)
+print*, 'With the greater_than priority, the first entry is ', p%x
+
 
 end program example_usage_mheap

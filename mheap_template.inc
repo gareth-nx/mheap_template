@@ -28,7 +28,7 @@
 ! To use this file, define
 !     TYPE(NODE_DATA_TYPE)
 ! and
-!     logical function IS_HIGHER_PRIORITY(N1,N2)
+!     logical function DEFAULT_PRIORITY_FUNCTION(N1,N2)
 !         TYPE(NODE_DATA_TYPE), INTENT(IN) :: N1, N2
 !         ... return TRUE if PRIORITY(N1) > PRIORITY(N2) and FALSE otherwise ..
 !     end function
@@ -45,6 +45,7 @@ TYPE :: THEAP
    TYPE(NODE_DATA_TYPE), ALLOCATABLE   :: DATA(:) ! NODE DATA -- type is defined by user outside this file
    INTEGER, ALLOCATABLE                :: INDX(:)   ! NODES INDEX
    LOGICAL                             :: ERR_IF_TOO_FULL = .FALSE. ! Throw an error if we insert too many elements?
+   PROCEDURE(PRIORITY_FUN), POINTER, NOPASS :: IS_HIGHER_PRIORITY => DEFAULT_PRIORITY_FUNCTION
    CONTAINS
    PROCEDURE :: INIT    => HEAP_INIT
    PROCEDURE :: INSERT  => HEAP_INSERT
@@ -56,6 +57,13 @@ TYPE :: THEAP
    !FINAL     :: HEAP_RELEASE
 END TYPE THEAP
 
+INTERFACE 
+    LOGICAL FUNCTION PRIORITY_FUN(N1, N2)
+        IMPORT NODE_DATA_TYPE
+        TYPE(NODE_DATA_TYPE), INTENT(IN) :: N1, N2
+    END FUNCTION
+END INTERFACE
+
 CONTAINS
 
    INTEGER FUNCTION HEAP_SIZE( HEAP )
@@ -64,13 +72,14 @@ CONTAINS
       HEAP_SIZE = HEAP%N
    END FUNCTION HEAP_SIZE
 
-   SUBROUTINE HEAP_INIT(HEAP,NMAX, ERR_IF_TOO_FULL)
+   SUBROUTINE HEAP_INIT(HEAP,NMAX, ERR_IF_TOO_FULL, PRIORITY_FUNCTION)
       ! Initializes the heap 
       ! NMAX  -  max size of the heap
       ! HPFUN -  the heap function (provides comparison between two nodes' data)
       CLASS( THEAP )        :: HEAP
       INTEGER, INTENT(IN) :: NMAX
       LOGICAL, INTENT(IN), OPTIONAL :: ERR_IF_TOO_FULL
+      PROCEDURE(PRIORITY_FUN), OPTIONAL :: PRIORITY_FUNCTION
       INTEGER :: I 
 
       HEAP%NMAX = NMAX
@@ -81,6 +90,8 @@ CONTAINS
       DO I = 1, NMAX
          HEAP%INDX(I)=I
       ENDDO
+
+      IF(PRESENT(PRIORITY_FUNCTION)) HEAP%IS_HIGHER_PRIORITY => PRIORITY_FUNCTION
 
       IF(PRESENT(ERR_IF_TOO_FULL)) HEAP%ERR_IF_TOO_FULL = ERR_IF_TOO_FULL
    END SUBROUTINE HEAP_INIT
@@ -94,6 +105,7 @@ CONTAINS
       HEAP%M    = 0
       HEAP%NMAX = 0
       HEAP%ERR_IF_TOO_FULL = .FALSE.
+      HEAP%IS_HIGHER_PRIORITY => DEFAULT_PRIORITY_FUNCTION
    END SUBROUTINE HEAP_RELEASE                          
 
    SUBROUTINE HEAP_INSERT(HEAP,NODE)         
@@ -127,7 +139,7 @@ CONTAINS
          K1 = K2 / 2
          IR = HEAP%INDX(K2) 
          IL = HEAP%INDX(K1) 
-         IF( IS_HIGHER_PRIORITY( HEAP%DATA(IL), HEAP%DATA(IR) ) ) RETURN
+         IF( HEAP%IS_HIGHER_PRIORITY( HEAP%DATA(IL), HEAP%DATA(IR) ) ) RETURN
          CALL SWAPINT( HEAP%INDX(K2), HEAP%INDX(K1) )
          K2 = K2 / 2
       ENDDO
@@ -188,7 +200,7 @@ CONTAINS
          IF( 2*K .NE. HEAP%N ) THEN 
             IL = HEAP%INDX(2*K+1) 
             IR = HEAP%INDX(2*K  )   
-            IF( IS_HIGHER_PRIORITY(HEAP%DATA(IL),HEAP%DATA(IR)) ) THEN
+            IF( HEAP%IS_HIGHER_PRIORITY(HEAP%DATA(IL),HEAP%DATA(IR)) ) THEN
                I = I + 1
             ENDIF
          ENDIF
@@ -197,7 +209,7 @@ CONTAINS
          ! the heap property, so the remaining elements must be re-heaped. 
          IL    = HEAP%INDX(K) 
          IR    = HEAP%INDX(I) 
-         IF( IS_HIGHER_PRIORITY(HEAP%DATA(IL),HEAP%DATA(IR)) ) RETURN
+         IF( HEAP%IS_HIGHER_PRIORITY(HEAP%DATA(IL),HEAP%DATA(IR)) ) RETURN
          
          CALL SWAPINT( HEAP%INDX(I), HEAP%INDX(K) )
          
